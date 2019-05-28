@@ -8,16 +8,19 @@ import pandas as pd
 # warriors, need data for key players -> Klay Thompson, Stephen Curry, Kevin Durant
 
 # want to be able to make comparison of Warriors now to past juggernauts
-# e.g. Lebron-era Heat, Late 2000s Spurs, early 2000s Lakers, 
+# e.g. Lebron-era Heat, Late 2000s Spurs, early 2000s Lakers
+
+# to do: get data for Lebron James + Dwyane Wade + Chris Bosh for Heat
+#            data for Tony Parker, Manu Ginobilli, Tim Duncan for Spurs
+#            data for 
 
 # general plots -> 3 pointers per season from 1990-2019
 #               -> 
-1610612744
-https://stats.nba.com/stats/shotchartdetail?AheadBehind=&CFID=33&ClutchTime=&Conference=&ContextFilter=&ContextMeasure=FGA&DateFrom=&DateTo=&Division=&EndPeriod=10&EndRange=28800&GROUP_ID=&GameEventID=&GameID=&GameSegment=&GroupID=&GroupMode=&GroupQuantity=5&LastNGames=0&LeagueID=00&Location=&Month=0&OnOff=&OpponentTeamID=1610612744&Outcome=&PORound=0&Period=0&PlayerID1=&PlayerID2=&PlayerID3=&PlayerID4=&PlayerID5=&PlayerPosition=&PointDiff=&Position=&RangeType=0&RookieYear=&SeasonSegment=&SeasonType=Regular+Season&ShotClockRange=&StartPeriod=1&StartRange=0&StarterBench=&TeamID=0&VsConference=&VsDivision=&VsPlayerID1=&VsPlayerID2=&VsPlayerID3=&VsPlayerID4=&VsPlayerID5=&VsTeamID=&CFPARAMS=
+
 stat_url_1 = 'https://stats.nba.com/stats/shotchartdetail?AheadBehind=&CFID=33&ClutchTime=&Conference=&ContextFilter=&ContextMeasure=FGA&DateFrom=&DateTo=&Division=&EndPeriod=10&EndRange=28800&GROUP_ID=&GameEventID=&GameID=&GameSegment=&GroupID=&GroupMode=&GroupQuantity=5&LastNGames=0&LeagueID=00&Location=&Month=0&OnOff=&OpponentTeamID=0&Outcome=&PORound=0&Period=0&PlayerID1=&PlayerID2=&PlayerID3=&PlayerID4=&PlayerID5=&PlayerPosition=&PointDiff=&Position=&RangeType=0&RookieYear=&SeasonSegment=&SeasonType=Regular+Season&ShotClockRange=&StartPeriod=1&StartRange=0&StarterBench=&TeamID=0&VsConference=&VsDivision=&VsPlayerID1=&VsPlayerID2=&VsPlayerID3=&VsPlayerID4=&VsPlayerID5=&VsTeamID=&CFPARAMS='
 stat_url_2 = '&Season='
 stat_url_3 = '&PlayerID='
-PLAYERS = {'Stephen_Curry': 201939, 'Klay_Thompson': 202691, 'Kevin_Durant': 201142, }
+PLAYERS = {'Stephen_Curry': 201939, 'Klay_Thompson': 202691, 'Kevin_Durant': 201142}
 YEARS = {'2014-15', '2015-16', '2016-17', '2017-18', '2018-19'}
 headers = requests.utils.default_headers()
 headers.update({
@@ -36,7 +39,6 @@ def get_all_player_data():
             url = stat_url_1 + str(y) + stat_url_2 + str(y) + stat_url_3 + str(v)
             # get JSON player data
             curr_season_player_data = requests.get(url, headers=headers).json()
-            time.sleep(3)
             data.append(curr_season_player_data)
             print("Data for player {}, for season {} collected".format(k, y))
     return data
