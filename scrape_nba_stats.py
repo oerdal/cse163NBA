@@ -50,7 +50,7 @@ def get_all_player_data():
 def get_leader_data_for_year(year):
     data = []
     fmt_year = scraper_utils.format_year(year)
-    for p_name, p_id in PLAYERS[fmt_year]:
+    for p_name, p_id in LEADERS[fmt_year].items():
         url = stat_url_1 + fmt_year + stat_url_2 + fmt_year + stat_url_3 + str(p_id)
         curr_season_leader_data = requests.get(url, headers=headers).json()
         data.append(curr_season_leader_data)
@@ -78,3 +78,6 @@ def convert_to_df(data):
 # data = get_all_player_data()
 # df = convert_to_df(data)
 # df.to_csv('shots/shot_data.csv')
+curr_year_data = get_leader_data_for_year(2019)
+curr_df = convert_to_df(curr_year_data)
+curr_df.to_csv('shots/current_year_shot_data.csv')
