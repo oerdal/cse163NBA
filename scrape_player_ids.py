@@ -5,40 +5,42 @@
 import requests
 import os
 from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-import time
 import re
 import json
+import scraper_utils
 
-base_url_1 = 'https://stats.nba.com/leaders/?Season='
-base_url_2 = '&SeasonType=Regular%20Season'
+base_url_1 = 'https://stats.nba.com/stats/leagueLeaders?LeagueID=00&PerMode=PerGame&Scope=S&Season='
+base_url_2 = '&SeasonType=Regular+Season&StatCategory=PTS'
+headers = requests.utils.default_headers()
+headers.update({
+    'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36',
+})
 
-options = webdriver.FirefoxOptions()
-options.add_argument('-headless')
-capa = DesiredCapabilities.FIREFOX
-capa["pageLoadStrategy"] = "none"
-
-def get_leaders_for_year(year):
+def get_k_leaders_for_year(year, k):
     leaders = {}
-    url = base_url_1 + year + base_url_2
-    driver = webdriver.Firefox(firefox_options=options, desired_capabilities=capa)
-    driver.set_window_size(1440,900)
-    driver.get(url)
-    time.sleep(15)
+    req = requests.get(base_url_1 + year + base_url_2, headers=headers)
+    player_data = req.json()
+    players = player_data['resultSet']['rowSet']
 
-    req_text = driver.page_source
-    leader_soup = BeautifulSoup(req_text, 'html.parser')
-    stat_body = leader_soup.select('.nba-stat-table tbody')
-    table_body = BeautifulSoup(str(stat_body), 'html.parser')
-    players = table_body.select('td.player > a')[:10]
-
-    for player in players:
-        name = re.sub(' ', '_', re.sub('[><]', '', re.search('>.*<', str(player)).group(0)))
-        player_id = re.sub('[^0-9]', '', re.search('player/[0-9]*/traditional', str(player)).group(0))
+    for player in players[:k]:
+        player_id, name = player[0], player[2]
+        name = re.sub(' ', '_', name)
         leaders[name] = player_id
 
     return leaders
 
-leaders = get_leaders_for_year('2018-19')
-print(leaders)
+
+def get_k_leaders_in_range(start_year, end_year, k):
+    data = {}
+
+    for i in range(start_year, end_year + 1):
+        year = scraper_utils.format_year(i)
+        print('---------- STARTING ' + year + ' ----------')
+        data[year] = get_k_leaders_for_year(year, k)
+        print(data[year])
+
+    return data
+
+with open('data/top_10_ids.json', 'w') as file:
+    data = get_k_leaders_in_range(1994, 2019, 10)
+    file.write(json.dumps(data))
