@@ -1,5 +1,7 @@
-import requests, time
+import requests, time, json
 import pandas as pd
+import numpy as np
+import scraper_utils
 
 # goal, scrape player shooting data for set of specific NBA players, use this
 # data to power shot chart visualizations
@@ -20,6 +22,7 @@ import pandas as pd
 stat_url_1 = 'https://stats.nba.com/stats/shotchartdetail?AheadBehind=&CFID=33&ClutchTime=&Conference=&ContextFilter=&ContextMeasure=FGA&DateFrom=&DateTo=&Division=&EndPeriod=10&EndRange=28800&GROUP_ID=&GameEventID=&GameID=&GameSegment=&GroupID=&GroupMode=&GroupQuantity=5&LastNGames=0&LeagueID=00&Location=&Month=0&OnOff=&OpponentTeamID=0&Outcome=&PORound=0&Period=0&PlayerID1=&PlayerID2=&PlayerID3=&PlayerID4=&PlayerID5=&PlayerPosition=&PointDiff=&Position=&RangeType=0&RookieYear=&SeasonSegment=&SeasonType=Regular+Season&ShotClockRange=&StartPeriod=1&StartRange=0&StarterBench=&TeamID=0&VsConference=&VsDivision=&VsPlayerID1=&VsPlayerID2=&VsPlayerID3=&VsPlayerID4=&VsPlayerID5=&VsTeamID=&CFPARAMS='
 stat_url_2 = '&Season='
 stat_url_3 = '&PlayerID='
+LEADERS = np.load('data/top_10_ids.npy', allow_pickle=True).item()
 PLAYERS = {'Stephen_Curry': 201939, 'Klay_Thompson': 202691, 'Kevin_Durant': 201142}
 YEARS = {'2014-15', '2015-16', '2016-17', '2017-18', '2018-19'}
 headers = requests.utils.default_headers()
@@ -43,6 +46,19 @@ def get_all_player_data():
             print("Data for player {}, for season {} collected".format(k, y))
     return data
 
+
+def get_leader_data_for_year(year):
+    data = []
+    fmt_year = scraper_utils.format_year(year)
+    for p_name, p_id in PLAYERS[fmt_year]:
+        url = stat_url_1 + fmt_year + stat_url_2 + fmt_year + stat_url_3 + str(p_id)
+        curr_season_leader_data = requests.get(url, headers=headers).json()
+        data.append(curr_season_leader_data)
+        print('Data for player {}, for season {} collected'.format(p_name, fmt_year))
+    return data
+    
+
+
 def convert_to_df(data):
     data_frames = []
     # the resultsSet list contains a dictionary in its first index,
@@ -59,6 +75,6 @@ def convert_to_df(data):
     
     return pd.concat(data_frames, ignore_index=True)
 
-data = get_all_player_data()
-df = convert_to_df(data)
-df.to_csv('shots/shot_data.csv')
+# data = get_all_player_data()
+# df = convert_to_df(data)
+# df.to_csv('shots/shot_data.csv')

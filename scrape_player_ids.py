@@ -7,6 +7,7 @@ import os
 from bs4 import BeautifulSoup
 import re
 import json
+import numpy as np
 import scraper_utils
 
 base_url_1 = 'https://stats.nba.com/stats/leagueLeaders?LeagueID=00&PerMode=PerGame&Scope=S&Season='
@@ -41,6 +42,5 @@ def get_k_leaders_in_range(start_year, end_year, k):
 
     return data
 
-with open('data/top_10_ids.json', 'w') as file:
-    data = get_k_leaders_in_range(1994, 2019, 10)
-    file.write(json.dumps(data))
+data = get_k_leaders_in_range(1994, 2019, 10)
+np.save('data/top_10_ids.npy', data)
