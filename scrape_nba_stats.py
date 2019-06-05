@@ -14,10 +14,10 @@ import scraper_utils
 
 # to do: get data for Lebron James + Dwyane Wade + Chris Bosh for Heat
 #            data for Tony Parker, Manu Ginobilli, Tim Duncan for Spurs
-#            data for 
+#            data for
 
 # general plots -> 3 pointers per season from 1990-2019
-#               -> 
+#               ->
 
 stat_url_1 = 'https://stats.nba.com/stats/shotchartdetail?AheadBehind=&CFID=33&ClutchTime=&Conference=&ContextFilter=&ContextMeasure=FGA&DateFrom=&DateTo=&Division=&EndPeriod=10&EndRange=28800&GROUP_ID=&GameEventID=&GameID=&GameSegment=&GroupID=&GroupMode=&GroupQuantity=5&LastNGames=0&LeagueID=00&Location=&Month=0&OnOff=&OpponentTeamID=0&Outcome=&PORound=0&Period=0&PlayerID1=&PlayerID2=&PlayerID3=&PlayerID4=&PlayerID5=&PlayerPosition=&PointDiff=&Position=&RangeType=0&RookieYear=&SeasonSegment=&SeasonType=Regular+Season&ShotClockRange=&StartPeriod=1&StartRange=0&StarterBench=&TeamID=0&VsConference=&VsDivision=&VsPlayerID1=&VsPlayerID2=&VsPlayerID3=&VsPlayerID4=&VsPlayerID5=&VsTeamID=&CFPARAMS='
 stat_url_2 = '&Season='
@@ -56,7 +56,7 @@ def get_leader_data_for_year(year):
         data.append(curr_season_leader_data)
         print('Data for player {}, for season {} collected'.format(p_name, fmt_year))
     return data
-    
+
 
 
 def convert_to_df(data):
@@ -72,7 +72,7 @@ def convert_to_df(data):
         # convert JSON data to data frame
         player_season_df = pd.DataFrame.from_records(data=player_season_data, columns=headers)
         data_frames.append(player_season_df)
-    
+
     return pd.concat(data_frames, ignore_index=True)
 
 # data = get_all_player_data()
