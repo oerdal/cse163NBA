@@ -23,6 +23,8 @@ stat_url_1 = 'https://stats.nba.com/stats/shotchartdetail?AheadBehind=&CFID=33&C
 stat_url_2 = '&Season='
 stat_url_3 = '&PlayerID='
 LEADERS = np.load('data/top_10_ids.npy', allow_pickle=True).item()
+LEADERS_19 = np.load('data/top_250_ids.npy', allow_pickle=True).item()
+LEADERS_ALL = np.load('data/top_10_ids.npy', allow_pickle=True).item()
 PLAYERS = {'Stephen_Curry': 201939, 'Klay_Thompson': 202691, 'Kevin_Durant': 201142}
 YEARS = {'2014-15', '2015-16', '2016-17', '2017-18', '2018-19'}
 headers = requests.utils.default_headers()
@@ -50,11 +52,22 @@ def get_all_player_data():
 def get_leader_data_for_year(year):
     data = []
     fmt_year = scraper_utils.format_year(year)
-    for p_name, p_id in LEADERS[fmt_year].items():
+    for p_name, p_id in LEADERS_ALL[fmt_year].items():
         url = stat_url_1 + fmt_year + stat_url_2 + fmt_year + stat_url_3 + str(p_id)
         curr_season_leader_data = requests.get(url, headers=headers).json()
         data.append(curr_season_leader_data)
         print('Data for player {}, for season {} collected'.format(p_name, fmt_year))
+    return data
+
+def get_leader_data_for_years(year1, year2):
+    data = []
+    for year in range(year1, year2):
+        fmt_year = scraper_utils.format_year(year)
+        for p_name, p_id in LEADERS_ALL[fmt_year].items():
+                url = stat_url_1 + fmt_year + stat_url_2 + fmt_year + stat_url_3 + str(p_id)
+                curr_season_leader_data = requests.get(url, headers=headers).json()
+                data.append(curr_season_leader_data)
+                print('Data for player {}, for season {} collected'.format(p_name, fmt_year))
     return data
 
 
@@ -75,9 +88,13 @@ def convert_to_df(data):
 
     return pd.concat(data_frames, ignore_index=True)
 
-# data = get_all_player_data()
-# df = convert_to_df(data)
-# df.to_csv('shots/shot_data.csv')
+# get shot data for top 250 players in year 2019
 curr_year_data = get_leader_data_for_year(2019)
 curr_df = convert_to_df(curr_year_data)
 curr_df.to_csv('shots/current_year_shot_data.csv')
+
+# get shot data for top 5 players for each year 2000-2019
+all_data = get_leader_data_for_years(2000,2020)
+all_df = convert_to_df(all_data)
+all_df.to_csv('shots/all_year_shot_data19.csv')
+

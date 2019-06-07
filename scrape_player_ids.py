@@ -42,5 +42,7 @@ def get_k_leaders_in_range(start_year, end_year, k):
 
     return data
 
-data = get_k_leaders_in_range(2019, 2019, 250)
-np.save('data/top_10_ids.npy', data)
+data_19 = get_k_leaders_in_range(2019, 2019, 250)
+np.save('data/top_250_ids.npy', data_19)
+data_all = get_k_leaders_in_range(2000,2019, 5)
+np.save('data/top_10_ids.npy', data_all)

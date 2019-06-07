@@ -9,6 +9,7 @@ import pandas as pd
 
 base_url1 = 'https://www.basketball-reference.com/leagues/NBA_'
 base_url2 = '_per_game.html'
+
 # concatenate the two above strings, with a given year in between,
 # to get all player stats for that year, e.g. 2000 gives 1999-2000 stats
 # 2019 gives 2018-19 etc.
