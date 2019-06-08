@@ -3,10 +3,7 @@
 # id numbers from stats.nba.com for later use
 
 import requests
-import os
-from bs4 import BeautifulSoup
 import re
-import json
 import numpy as np
 import scraper_utils
 
@@ -16,6 +13,7 @@ headers = requests.utils.default_headers()
 headers.update({
     'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36',
 })
+
 
 def get_k_leaders_for_year(year, k):
     leaders = {}
@@ -42,7 +40,8 @@ def get_k_leaders_in_range(start_year, end_year, k):
 
     return data
 
+
 data_19 = get_k_leaders_in_range(2019, 2019, 250)
 np.save('data/top_250_ids.npy', data_19)
-data_all = get_k_leaders_in_range(2000,2019, 5)
+data_all = get_k_leaders_in_range(2000, 2019, 5)
 np.save('data/top_10_ids.npy', data_all)
